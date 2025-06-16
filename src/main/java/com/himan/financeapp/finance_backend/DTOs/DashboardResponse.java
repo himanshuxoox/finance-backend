@@ -14,6 +14,6 @@ public class DashboardResponse {
     private Double totalIncome;
     private Double totalExpense;
     private Double remaining;
-    private List<Transaction> recentTransactions;
+    private List<TransactionDto> recentTransactions;
     // Add chart data if needed
 }

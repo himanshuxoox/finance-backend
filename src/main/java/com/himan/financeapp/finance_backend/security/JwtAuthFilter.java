@@ -14,12 +14,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component
-@RequiredArgsConstructor
+
+
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+
+    public JwtAuthFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+        this.jwtService = jwtService;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -32,6 +37,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String userEmail;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("❌ No JWT token in request");
             filterChain.doFilter(request, response);
             return;
         }
@@ -42,6 +48,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
             if (jwtService.isTokenValid(jwt, userDetails)) {
+                System.out.println("✅ JWT is valid for user: " + userEmail);
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
@@ -51,6 +58,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+            else{
+                System.out.println("❌ Invalid JWT");
             }
         }
 

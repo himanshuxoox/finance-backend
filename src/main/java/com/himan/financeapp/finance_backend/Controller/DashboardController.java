@@ -22,6 +22,9 @@ public class DashboardController {
     public ResponseEntity<DashboardResponse> getDashboardData(Authentication auth) {
         String email = auth.getName(); // Spring Security will give the email from JWT
         DashboardResponse response = dashboardService.getDashboardData(email);
+        System.out.printf("response->>"+response.toString());
         return ResponseEntity.ok(response);
     }
+
+    
 }
