@@ -4,6 +4,7 @@ package com.himan.financeapp.finance_backend.security;
 
 import com.himan.financeapp.finance_backend.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.*;
@@ -26,6 +27,11 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
+
+
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     private final UserRepository userRepository;
    // private final JwtAuthFilter jwtAuthFilter; // ✅ Inject JwtAuthFilter
@@ -55,7 +61,7 @@ public class ApplicationConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // your frontend
+        config.setAllowedOrigins(List.of(frontendUrl)); // your frontend
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowCredentials(true);
